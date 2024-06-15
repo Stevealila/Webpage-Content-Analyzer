@@ -1,0 +1,13 @@
+chromadb
+faiss-cpu
+firecrawl-py
+langchain
+langchain-chroma
+langchain-community
+langchain-core
+langchain-openai
+python-dotenv
+streamlit
+ipykernel
+bs4
+langgraph

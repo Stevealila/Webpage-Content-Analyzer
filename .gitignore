@@ -1,0 +1,8 @@
+v
+env
+venv
+v_env
+.env
+__pycache__
+.ipynb_checkpoints
+example
