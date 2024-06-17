@@ -3,11 +3,12 @@ import os
 from langchain_openai import ChatOpenAI
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_chroma import Chroma
+from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
+import streamlit as st
 
 load_dotenv()
 os.environ['OPENAI_API_KEY'] = os.getenv('OPENAI_API_KEY')
@@ -22,7 +23,7 @@ def load_docs(url):
 def create_vectorestore_retriever(docs):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     splits = text_splitter.split_documents(docs)
-    vectorstore = Chroma.from_documents(documents=splits, embedding=OpenAIEmbeddings())
+    vectorstore = FAISS.from_documents(documents=splits, embedding=OpenAIEmbeddings())
     retriever = vectorstore.as_retriever()
     return retriever
 
@@ -64,11 +65,14 @@ def analyze_webpage_content(url, question):
     return result
 
 
-if __name__ == '__main__':
+# Streamlit UI
+st.title("Webpage Content Analyzer")
 
-    url = "https://federationwrestling.com/"
-    question = "List the top 10 wrestlers"
+url = st.text_input("Enter the webpage URL:")
+question = st.text_input("Enter your question:")
 
-    result = analyze_webpage_content(url, question)
-
-    print(result)
+if st.button("Analyze"):
+    with st.spinner("Analyzing..."):
+        result = analyze_webpage_content(url, question)
+        st.success("Analysis complete!")
+        st.write(result)
