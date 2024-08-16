@@ -1,19 +1,19 @@
-# ...................................Uses OpenAI models.............................
+# ...................................Uses Google models.............................
 
 from dotenv import load_dotenv
 import os
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import GoogleGenerativeAI
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
-from langchain_openai import OpenAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 import streamlit as st
 
 load_dotenv()
-os.environ['OPENAI_API_KEY'] = os.getenv('OPENAI_API_KEY')
+os.environ['GOOGLE_API_KEY'] = os.getenv('GOOGLE_API_KEY')
 
 
 def load_docs(url):
@@ -25,7 +25,7 @@ def load_docs(url):
 def create_vectorestore_retriever(docs):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     splits = text_splitter.split_documents(docs)
-    vectorstore = FAISS.from_documents(documents=splits, embedding=OpenAIEmbeddings())
+    vectorstore = FAISS.from_documents(documents=splits, embedding=GoogleGenerativeAIEmbeddings(model='models/embedding-001'))
     retriever = vectorstore.as_retriever()
     return retriever
 
@@ -59,7 +59,7 @@ def filter_answer(chain, question):
 
 def analyze_webpage_content(url, question):
     docs = load_docs(url)
-    llm = ChatOpenAI(model="gpt-4o")
+    llm = GoogleGenerativeAI(model="gemini-1.5-pro")
     prompt_template = create_prompt_template()
     retriever = create_vectorestore_retriever(docs)
     chain = retrieve_documents(llm, prompt_template, retriever)
