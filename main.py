@@ -59,7 +59,7 @@ def filter_answer(chain, question):
 
 def analyze_webpage_content(url, question):
     docs = load_docs(url)
-    llm = GoogleGenerativeAI(model="gemini-1.5-pro")
+    llm = GoogleGenerativeAI(model="gemini-2.0-flash")
     prompt_template = create_prompt_template()
     retriever = create_vectorestore_retriever(docs)
     chain = retrieve_documents(llm, prompt_template, retriever)
